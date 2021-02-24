@@ -1,0 +1,58 @@
+#include <sstream>
+#include <vector>
+#include <algorithm>
+#include <cstring>
+#include <cstdlib>
+#include <iostream>
+#include <string>
+#include <cassert>
+#include <ctime>
+#include <map>
+#include <math.h>
+#include <cstdio>
+#include <set>
+#include <deque>
+#include <memory.h>
+#include <queue>
+
+#pragma comment(linker, "/STACK:64000000")
+typedef long long ll;
+
+using namespace std;
+
+const int MAXN = -1;
+const int MOD = 1000 * 1000 * 1000 + 7;
+const int INF = (int)(1e9);
+
+int main() {
+#ifdef _MSC_VER
+	freopen("input.txt", "r", stdin);
+#endif
+
+	string s;
+	while (cin >> s) {
+		int n = s.length();
+		vector<int> cntR(26);
+		vector<vector<int> > sumR(26, vector<int>(26));
+		for (int i = n - 1; i >= 0; i--) {
+			char c = s[i] - 'a';
+			for (int j = 0; j < 26; j++) sumR[c][j] = (sumR[c][j] + cntR[j]) % MOD;
+			cntR[c]++;
+		}
+
+		int ans = 0;
+		vector<int> cntL(26);
+		//vector<vector<int> > sumL(26, vector<int>(26));
+		for (int i = 0; i < n; i++) {
+			int c = s[i] - 'a';
+			cntR[c]--;
+			for (int j = 0; j < 26; j++) sumR[c][j] = (sumR[c][j] - cntR[j] + MOD) % MOD;
+			
+			for (int j = 0; j < 26; j++) ans = (ans + 1LL * cntL[j] * sumR[c][j]) % MOD;
+			cntL[c]++;
+		}
+		cout << ans << endl;
+	}
+
+	return 0;
+}
